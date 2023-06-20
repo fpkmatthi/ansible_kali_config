@@ -1,0 +1,74 @@
+# /tasks/main.yml
+---
+
+- name: Install docker dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - python3-pip
+      - python3-setuptools
+      - virtualenv
+
+- name: Add Docker GPG key
+  apt_key:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+
+- name: Install Docker CE
+  apt:
+    name: "{{ item }}"
+    update_cache: true
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+- name: Create Docker config file
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Setup Docker daemon
+  copy:
+    src: etc_docker_daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: Create systemd dir for docker
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: Reload systemd configs
+  systemd:
+    daemon_reload: yes
+
+- name: Start docker
+  service:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  meta: flush_handlers
+
+# - name: Install docker-compose
+#   command: "{{ item }}"
+#   with_items:
+#     - curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+#     - chmod +x /usr/local/bin/docker-compose
+
+# - name: Create symlink to docker-compose
+#   file:
+#     src: /usr/local/bin/docker-compose
+#     dest: /usr/bin/docker-compose
+#     state: link
+

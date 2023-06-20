@@ -1,0 +1,68 @@
+---
+
+- name: apt-update packages
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Remove useless packages from cache
+  ansible.builtin.apt:
+    autoclean: true
+
+- name: Remove useless packages from cache
+  ansible.builtin.apt:
+    autoclean: true
+
+- name: Remove package dependencies that are no longer required
+  ansible.builtin.apt:
+    autoremove: true
+
+- name: Update local Database
+  ansible.builtin.command: updatedb
+
+- name: Ensure /home/kali/.bin exists
+  ansible.builtin.file:
+    path: /home/kali/.bin
+    state: directory
+    mode: '0700'
+    owner: 'kali'
+    group: 'kali'
+
+- name: Clone tool repos
+  ansible.builtin.git:
+    repo: "{{ item }}"
+    dest: "/opt/{{ item | split('/') | last }}"
+  with_items:
+      - https://github.com/cddmp/enum4linux-ng
+      - https://github.com/grimlockx/ADCSKiller
+      - https://github.com/0xsha/CloudBrute
+
+- name: Remove unnecessary packages
+  apt:
+    name: "{{ item }}"
+    state: absent
+    update_cache: true
+  with_items:
+      - burpsuite
+
+- name: Install default kali dependencies
+  ansible.builtin.apt:
+    update_cache: yes
+    force_apt_get: yes
+    install_recommends: yes
+    state: latest
+    name: "{{ item }}"
+  with_items:
+      - apt-transport-https
+      - jq
+      - git
+
+- name: Install custom kali packages
+  ansible.builtin.apt:
+    update_cache: yes
+    force_apt_get: yes
+    install_recommends: yes
+    state: latest
+    name: "{{ item }}"
+  loop: "{{ kali_packages }}"
+
+

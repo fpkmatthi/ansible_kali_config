@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "[+] Cloning dot repo"
+/usr/bin/git clone --bare {{ dotfile_git_url }} /home/{{ burpsuite_user }}/.dotfiles
+
+mkdir -p /home/{{ burpsuite_user }}/.dotfiles-backup
+
+echo "[+] Attempting installation of dotfiles"
+/usr/bin/git --git-dir=/home/{{ burpsuite_user }}/.dotfiles/ --work-tree=/home/{{ burpsuite_user }} checkout
+
+if [ $? = 0 ]; then
+  echo "[+] Checked out config."
+else
+  echo "[+] Backing up pre-existing dot files."
+  /usr/bin/git --git-dir=/home/{{ burpsuite_user }}/.dotfiles/ --work-tree=/home/{{ burpsuite_user }} checkout 2>&1 | grep -E "\s+\." | awk {'print $1'} | xargs -I{} mv {} /home/{{burpsuite_user}}/.dotfiles-backup/{}
+fi
+
+echo "[+] Installing dotfiles and overwriting existing files"
+/usr/bin/git --git-dir=/home/{{ burpsuite_user }}/.dotfiles/ --work-tree=/home/{{ burpsuite_user }} checkout
+/usr/bin/git --git-dir=/home/{{ burpsuite_user }}/.dotfiles/ --work-tree=/home/{{ burpsuite_user }} config status.showUntrackedFiles no
+
+

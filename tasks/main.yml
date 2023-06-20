@@ -1,0 +1,35 @@
+---
+# tasks file for ansible_kali_config
+
+# - import_tasks: users.yml
+#   tags:
+#     - users
+
+# - import_tasks: packages.yml
+#   tags:
+#     - packages
+
+# - import_tasks: docker.yml
+#   tags:
+#     - docker
+
+# - import_tasks: pip.yml
+#   tags:
+#     - python
+
+# - import_tasks: burpsuite/main.yml
+#   tags:
+#     - burpsuite
+
+# - import_tasks: nessus.yml
+#   tags:
+#     - nessus
+
+# - import_tasks: obsidian.yml
+#   tags:
+#     - obsidian
+
+- import_tasks: dotfiles.yml
+  tags:
+    - dotfiles
+

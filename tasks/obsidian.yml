@@ -1,0 +1,20 @@
+---
+
+- name: Get latest version download URL from GitHub API
+  shell: curl -s 'https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest' | jq '.assets[].browser_download_url' | grep -i appimage |  grep -v arm64| sed 's/"//g'
+  register: obsidianurloutput
+
+- set_fact:
+    obsidianurl: "{{ obsidianurloutput.stdout }}"
+
+- debug:
+    msg: "{{ obsidianurl }}"
+
+- name: Download 
+  get_url:
+    url: "{{ obsidianurl }}"
+    dest: /usr/bin/obsidian
+    owner: 'root'
+    group: 'root'
+    mode: '0777'
+

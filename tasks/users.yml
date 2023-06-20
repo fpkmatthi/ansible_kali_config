@@ -1,0 +1,38 @@
+---
+
+- name: Add user(s)
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    password: "{{ item.pw | password_hash('sha512') }}"
+    shell: "/bin/bash"
+    create_home: true
+    update_password: always
+    state: present
+  with_items: "{{ users }}"
+  no_log: true
+  tags:
+    - users
+
+- name: Ensure users own their home dir
+  file:
+    state: directory
+    path: "/home/{{ item.name }}"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    mode: "0744"
+  with_items: "{{ users }}"
+  tags:
+    - users
+
+# - name: Add pub keys to operators
+#   authorized_key:
+#     user: "{{ item.name }}"
+#     key: "{{ item.ssh_pubkey }}"
+#     state: present
+#   with_items: "{{ users }}"
+#   no_log: true
+#   tags:
+#     - users
+#     - sshkeys
+

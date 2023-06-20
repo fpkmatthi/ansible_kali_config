@@ -1,0 +1,14 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+platforms:
+  - name: kali
+    box: kalilinux/rolling
+    instance_raw_config_args:
+      - "vm.network 'forwarded_port', guest: 80, host: 8088"
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

@@ -1,0 +1,39 @@
+---
+
+- name: Get Nessus package file
+  get_url:
+    url: https://www.tenable.com/downloads/api/v2/pages/nessus/files/Nessus-10.5.2-ubuntu1404_amd64.deb
+    dest: /tmp/nessus.deb
+    checksum: sha256:d4d6a5470f809f5692e57ea897e4721324837bbf7ccc0e3ea0c63d17b7e7f80d
+
+- name: Install Nessus .deb package
+  apt:
+    deb: /tmp/nessus.deb
+
+- name: Stop Nessus service
+  ansible.builtin.service:
+    name: nessusd
+    state: stopped
+
+- name: Add Nessus user
+  ansible.builtin.expect:
+    command: /opt/nessus/sbin/nessuscli adduser "{{ nessus_user }}"
+    responses:
+      (?i)password: "{{ nessus_user_pw }}"
+      (?i)administrator: "y"
+      (?i)rules: ""
+
+# - name: Set Nessus user password
+#   ansible.builtin.expect:
+#     command: /opt/nessus/sbin/nessuscli chpasswd "{{ nessus_user }}"
+#     responses:
+#       (?i)password: "{{ nessus_user_pw }}"
+#   no_log: true
+  
+- name: Activate Nessus
+  command:  /opt/nessus/sbin/nessuscli fetch --register "{{ nessus_license }}"
+
+- name: Restart Nessus service
+  ansible.builtin.service:
+    name: nessusd
+    state: started

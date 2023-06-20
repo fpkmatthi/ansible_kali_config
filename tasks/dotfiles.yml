@@ -1,0 +1,13 @@
+---
+
+- name: Copy dot_installer
+  template:
+    src: dot_installer.sh.j2
+    dest: "/home/{{ burpsuite_user }}/dot_installer.sh"
+    owner: "{{ burpsuite_user }}"
+    group: "{{ burpsuite_user }}"
+    mode: "0700"
+
+- name: Execute dot_installer
+  command: /bin/bash /home/{{ burpsuite_user }}/dot_installer.sh
+

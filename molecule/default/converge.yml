@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    ansible_user: vagrant
+    ansible_password: vagrant
+  tasks:
+    - name: "Include ansible_kali_config"
+      ansible.builtin.include_role:
+        name: "ansible_kali_config"

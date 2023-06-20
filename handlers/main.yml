@@ -1,0 +1,9 @@
+# /handlers/main.yml
+---
+
+- name: Starting docker service
+  service:
+    name: docker
+    enabled: yes
+    state: started
+
