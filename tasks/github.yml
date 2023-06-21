@@ -1,0 +1,8 @@
+---
+
+- name: Clone github repos (manual installation needed)
+  ansible.builtin.git:
+    repo: "{{ item }}"
+    dest: "/opt/{{ item | split('/') | last }}"
+    update: yes
+  loop: "{{ github_packages }}"

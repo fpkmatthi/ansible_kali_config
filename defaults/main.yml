@@ -1,20 +1,28 @@
 ---
 # defaults file for ansible_kali_config
 
+# Users to provision (usually just one)
 users:
   - name: "kali"
     groups: "sudo"
     pw: "kali"
 
+# Packages to install
 pip_packages:
   - certipy-ad
-
 kali_packages:
   - seclists
   - tmux
   - flameshot
+github_packages:
+  - https://github.com/bats3c/shad0w
+  - https://github.com/HavocFramework/Havoc
+  - https://github.com/mitre/caldera
+  - https://github.com/OmerYa/Invisi-Shell.git
+  - https://github.com/NetSPI/PowerUpSQL.git
+  - https://github.com/A-poc/RedTeam-Tools
 
-# defaults file for ansible-role-burpsuite
+# Burpsuite vars
 burpsuite_user: kali
 burpsuite_activate: true
 burpsuite_edition: pro

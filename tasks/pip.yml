@@ -8,8 +8,8 @@
 
 - name: Install python packages
   ansible.builtin.pip:
-    name: '{{ item }}'
+    name: "{{ item }}"
     state: latest
     executable: pip3
-  loop: '{{ pip_packages }}'
+  loop: "{{ pip_packages }}"
 
